@@ -71,30 +71,26 @@ void * deleteElementAt(LinkedList * list, int index){
 	int i= 0;
 	node_ptr listHead =list->head;
 	node_ptr prevAddress=NULL;
+	void* data;
 
-	if(list->count<index || index<0)
+	if(list->count<=index || index<0)
 		return NULL;
 
-	if(index==0){
-		prevAddress = list->head;
-		list->head = list->head->next;
-		return prevAddress->data;
-	}
-
-	while(i<list->count){
+	while(i<index){
 		prevAddress = listHead;
 		listHead = listHead->next;
-		if(i==index-1){
-			if(listHead->next==NULL)
-				list->tail=prevAddress;
-			else
-				prevAddress->next = listHead->next;
-			list->count--;
-			return listHead->data;
-		}
 		i++;
 	}
-	return 0;
+	
+	if(list->tail==listHead){
+		list->tail=prevAddress;
+	}
+	data= listHead->data;
+	prevAddress?(prevAddress->next =listHead->next):(list->head =list->head->next);
+
+	list->count--;
+	free(listHead);
+	return data;
 };
 
 int asArray(LinkedList list, void ** array){
