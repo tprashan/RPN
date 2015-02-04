@@ -1,4 +1,10 @@
 # include "stackLibrary.h"
 
-int evaluate(char *expression);
-int evaluate1(char *expression);
+typedef struct result Result;
+
+struct result {
+  int error;
+  int status;
+};
+
+Result evaluate(char * expression);
