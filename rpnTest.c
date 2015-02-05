@@ -136,3 +136,10 @@ void test_17_evaluate_expression_will_give_0_as_a_result_error_when_whiteSpace_f
 	assertEqual(result.status,0);
 	assertEqual(result.error,0);
 }
+
+// void test_18_convert_it_to_an_equivalent_valid_Postfix_expression(){
+// 	char *result,*expected="3 4 2 * 1 5 - 2 3 ^ ^ / +";
+// 	char *expression = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
+// 	result = infixToPostfix(expression);
+// 	assertEqual(strcmp(result,expected),0);
+// }

@@ -6,17 +6,17 @@
 
 
 int handleOperator(Stack new_stack,int operator){
-	int popAddress1,popAddress2,pushAddress;
-	popAddress1 = (int)((*new_stack.stackTop)->data) ;pop(new_stack);
-	popAddress2 = (int)((*new_stack.stackTop)->data) ;pop(new_stack);
+	int popvalue1,popValue2,pushValue;
+	popvalue1 = (int)((*new_stack.stackTop)->data) ;pop(new_stack);
+	popValue2 = (int)((*new_stack.stackTop)->data) ;pop(new_stack);
 	switch(operator){
-		case '+': pushAddress = popAddress2 + popAddress1; break;
-		case '-': pushAddress = popAddress2 - popAddress1; break;
-		case '*': pushAddress = popAddress2 * popAddress1; break;
-		case '/': pushAddress = popAddress2 / popAddress1; break;
+		case '+': pushValue = popValue2 + popvalue1; break;
+		case '-': pushValue = popValue2 - popvalue1; break;
+		case '*': pushValue = popValue2 * popvalue1; break;
+		case '/': pushValue = popValue2 / popvalue1; break;
 		default : printf("Notation is wrong.Give valid notation" );
 	}
-	return pushAddress;
+	return pushValue;
 }
 
 int handleDigits(char* expression,int i,int k,int * data,Stack new_stack){
@@ -31,7 +31,7 @@ int handleDigits(char* expression,int i,int k,int * data,Stack new_stack){
 
 int findWhiteSpace(char *expr,int i){
 	if(expr[i]<'0'||expr[i]>'9'){
-		if(expr[i]==32 || expr[i]=='+' || expr[i]=='-' || expr[i]=='*' || expr[i]=='/')
+		if(expr[i]==' ' || expr[i]=='+' || expr[i]=='-' || expr[i]=='*' || expr[i]=='/' || expr[i]=='^' || expr[i]=='(' || expr[i]==')')
 			return 0;
 		return 1;
 	}
@@ -44,7 +44,7 @@ int isOperator(char *expression,int i){
 
 Result evaluate(char *expression){
 	int i=0,k=-1;
-	int  pushAddress,data[strlen(expression)];
+	int  pushValue,data[strlen(expression)];
 	Stack new_stack = createStack();
 	Result result;result.status=0;
 
@@ -55,14 +55,79 @@ Result evaluate(char *expression){
 			
 		if(isOperator(expression,i)){
 			if(new_stack.list->count<2){result.error=0;return result;}
-			pushAddress = handleOperator(new_stack,expression[i]);
-			push(new_stack,(void*)pushAddress);
+			pushValue = handleOperator(new_stack,expression[i]);
+			push(new_stack,(void*)pushValue);
 		}
 		i++;
 	}
 	result.status = (new_stack.list->count==1)? (int)((*new_stack.stackTop)->data) : 0 ;
 	return result;
 };
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int handleDigitsInsertInQueue(char* expression,int i,int k,int * data,Queue new_queue){
+	k = (expression[i+1]!=' ' && k==-1) ? i : k;	
+	if(expression[i+1]==' '){ 
+		data[i] = (k<0) ? atoi(&expression[i]) : atoi(&expression[k]);
+		printf("%d\n",data[i] );
+		insert(new_queue,(void*)data[i]);
+		k = -1;
+	}
+	return k;
+};
+
+int isOperatorIncludeBrace(char *expr,int i){
+	return (expr[i]=='+' || expr[i]=='-' || expr[i]=='*' || expr[i]=='/' || expr[i]=='^' || expr[i]=='(' || expr[i]==')');
+}
+
+char * infixToPostfix(char * expression){
+	int i=0,k=-1,data[strlen(expression)];
+	char pushValue;
+	char *result="3 4 +";
+	Stack new_stack = createStack();
+	Queue new_queue = createQueue();
+
+	while(expression[i]!='\0'){
+		if(findWhiteSpace(expression,i)){return 0;}
+
+		if(expression[i]>='0' && expression[i]<='9'){k = handleDigitsInsertInQueue(expression,i,k,data,new_queue);}
+			
+		if(isOperatorIncludeBrace(expression,i)){ 
+			pushValue = expression[i];
+			push(new_stack,(void*)expression[i]);
+		}
+
+		i++;
+	};
+	return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
