@@ -129,7 +129,7 @@ void test_17_evaluate_expression_will_give_0_as_a_result_status_when_operator_is
 	assertEqual(result.error,0);
 }
 
-void test_17_evaluate_expression_will_give_0_as_a_result_error_when_whiteSpace_found_in_expression(){
+void test_18_evaluate_expression_will_give_0_as_a_result_error_when_whiteSpace_found_in_expression(){
 	Result result;
 	char *expression = "100000    10   1 1 *  @ + 20 $ + 1000 /";
 	result =  evaluate(expression);
@@ -137,9 +137,222 @@ void test_17_evaluate_expression_will_give_0_as_a_result_error_when_whiteSpace_f
 	assertEqual(result.error,0);
 }
 
-// void test_18_convert_it_to_an_equivalent_valid_Postfix_expression(){
-// 	char *result,*expected="3 4 2 * 1 5 - 2 3 ^ ^ / +";
+void test_19_find_operator_will_give_0_as_a_result_when_no_operator_found_in_that_index(){
+	int result,index=2;
+	char *expression = "100+43-745";
+	result =  isOperator(expression,index);
+	assertEqual(result,0);
+
+}
+
+void test_20_find_operator_will_give_1_as_a_result_when_operator_found_in_that_index(){
+	int result,index=4;
+	char *expression = "43+3*234/698";
+	result =  isOperator(expression,index);
+	assertEqual(result,1);
+}
+
+void test_21_find_operator_will_give_1_as_a_result_when_operator_found_in_that_index_13(){
+	int result,index=13;
+	char *expression = "43+3 * 2 3 4 /69 8";
+	result =  isOperator(expression,index);
+	assertEqual(result,1);
+}
+
+void test_22_find_operator_will_give_0_as_a_result_when_operator_found_in_that_index_4(){
+	int result,index=4;
+	char *expression = "43+3 * 2 3 4 /69 8";
+	result =  isOperator(expression,index);
+	assertEqual(result,0);
+}
+
+void test_23_find_whiteSpace_will_give_0_as_a_result_when_no_whiteSpace_found_in_that_index_4(){
+	int result,index=4;
+	char *expression = "43+3 * 2 3 4 /69 8";
+	result =  findWhiteSpace(expression,index);
+	assertEqual(result,0);
+}
+
+void test_24_find_whiteSpace_will_give_1_as_a_result_when_whiteSpace_found_in_that_index_4(){
+	int result,index=4;
+	char *expression = "43+3@ * 2 3 4 /69 8";
+	result =  findWhiteSpace(expression,index);
+	assertEqual(result,1);
+}
+
+void test_25_handleOperator_gives_resultValue_after_evaluating_given_values(){
+	int result,data1=4,data2=11;
+	Stack stack = createStack();push(stack,(void*)data1);push(stack,(void*)data2);
+	result =  handleOperator(stack,'+');
+	assertEqual(result,15);
+}
+
+void test_26_handleOperator_gives_resultValue_after_evaluating_given_values_80(){
+	int result,data1=4,data2=20;
+	Stack stack = createStack();push(stack,(void*)data1);push(stack,(void*)data2);
+	result =  handleOperator(stack,'*');
+	assertEqual(result,80);
+}
+
+void test_27_handleOperator_gives_resultValue_after_evaluating_given_values_minus_16(){
+	int result,data1=4,data2=20;
+	Stack stack = createStack();push(stack,(void*)data1);push(stack,(void*)data2);
+	result =  handleOperator(stack,'-');
+	assertEqual(result,-16);
+}
+
+void test_28_handleOperator_gives_resultValue_after_evaluating_given_values_0(){
+	int result,data1=4,data2=20;
+	Stack stack = createStack();push(stack,(void*)data1);push(stack,(void*)data2);
+	result =  handleOperator(stack,'/');
+	assertEqual(result,0);
+}
+
+void test_29_handleOperator_gives_resultValue_after_evaluating_given_values_10(){
+	int result,data1=30,data2=20;
+	Stack stack = createStack();push(stack,(void*)data1);push(stack,(void*)data2);
+	result =  handleOperator(stack,'-');
+	assertEqual(result,10);
+}
+
+void test_30_handleOperator_gives_resultValue_after_evaluating_given_values_2(){
+	int result,data1=4,data2=2;
+	Stack stack = createStack();push(stack,(void*)data1);push(stack,(void*)data2);
+	result =  handleOperator(stack,'/');
+	assertEqual(result,2);
+}
+
+void test_31_handleOperator_gives_resultValue_after_evaluating_given_values_0(){
+	int result,data1=4,data2=0;
+	Stack stack = createStack();push(stack,(void*)data1);push(stack,(void*)data2);
+	result =  handleOperator(stack,'/');
+	assertEqual(result,0);
+}
+
+void test_32_check_precedence_of_plus_is_2(){
+	int result;
+	result = setPrecedenceOfOperator('+');
+	assertEqual(result,2);
+}
+
+void test_33_check_precedence_of_minus_is_2(){
+	int result;
+	result = setPrecedenceOfOperator('-');
+	assertEqual(result,2);
+}
+
+void test_34_check_precedence_of_multiply_is_3(){
+	int result;
+	result = setPrecedenceOfOperator('*');
+	assertEqual(result,3);
+}
+
+void test_35_check_precedence_of_divide_is_3(){
+	int result;
+	result = setPrecedenceOfOperator('/');
+	assertEqual(result,3);
+}
+
+void test_36_check_precedence_of_cap_is_4(){
+	int result;
+	result = setPrecedenceOfOperator('^');
+	assertEqual(result,4);
+}
+
+void test_37_check_precedence_of_end_brace_is_1(){
+	int result;
+	result = setPrecedenceOfOperator(')');
+	assertEqual(result,1);
+}
+
+void test_38_check_precedence_of_open_brace_is_minus_1(){
+	int result;
+	result = setPrecedenceOfOperator('(');
+	assertEqual(result,1);
+}
+
+void test_39_check_plus_has_less_precedence_than_multiply(){
+	int result;
+	result = checkPrecedence('+','*');
+	assertEqual(result,0);
+}
+
+void test_40_check_devide_has_greater_precedence_than_minus(){
+	int result;
+	result = checkPrecedence('/','-');
+	assertEqual(result,1);
+}
+
+void test_41_check_perticular_index_of_expression_is_a_digit(){
+	int result;
+	char *expression = "10 5 + 6";
+	result = isDigit(expression,3);
+	assertEqual(result,1);
+}
+
+void test_42_check_perticular_index_of_expression_is_not_a_digit(){
+	int result;
+	char *expression = "10 5 + 6";
+	result = isDigit(expression,5);
+	assertEqual(result,0);
+}
+
+void test_43_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result,*expected="3 4 +";
+	char *expression = "3 + 4";
+	result = infixToPostfix(expression);
+	assertEqual(strcmp(result,expected),0);
+}
+
+void test_44_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result;
+	char *expected="3 4 * 2 +";
+	char *expression = "3 * 4 + 2";
+	result = infixToPostfix(expression);
+	assertEqual(strcmp(result,expected),0);
+}
+
+void test_45_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result;
+	char *expected="3 4 * 2 * 9 + 6 2 / - 4 +";
+	char *expression = "3 * 4 * 2 + 9 - 6 / 2 + 4";
+	result = infixToPostfix(expression);
+	assertEqual(strcmp(result,expected),0);
+}
+
+void test_46_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result;
+	char *expected="5 6 7 ^ * 8 +";
+	char *expression = "5 * 6 ^ 7 + 8";
+	result = infixToPostfix(expression);
+	assertEqual(strcmp(result,expected),0);
+}
+
+void test_47_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result;
+	char *expected="1 2 3 * +";
+	char *expression = "1 + 2 * 3";
+	result = infixToPostfix(expression);
+	assertEqual(strcmp(result,expected),0);
+}
+
+// void test_48_convert_it_to_an_equivalent_valid_Postfix_expression(){
+// 	char *result;
+// 	char *expected="1 2 3 + *";
+// 	char *expression = "1 * ( 2 + 3 )";
+// 	result = infixToPostfix(expression);
+// 	assertEqual(strcmp(result,expected),0);
+// }
+
+// void test_46_convert_it_to_an_equivalent_valid_Postfix_expression(){
+// 	char *result;
+// 	char *expected="3 4 2 * 1 5 - 2 3 ^ ^ / +";
 // 	char *expression = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
 // 	result = infixToPostfix(expression);
+
+// 	printf("----------%s\n",result );
+// 	// printf("outPut----3 4 2 * / +   - (  2 ^ 3 ^ )\n");
+// 	printf("expected--3 4 2 * 1 5 - 2 3 ^ ^ / +\n");
+
 // 	assertEqual(strcmp(result,expected),0);
 // }
