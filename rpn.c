@@ -69,10 +69,7 @@ Result evaluate(char *expression){
 
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// char *expression = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
-// char *expected="3 4 2 * 1 5 - 2 3 ^ ^ / +";
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int setPrecedenceOfOperator(int operator){
 	switch(operator){
@@ -88,6 +85,20 @@ int setPrecedenceOfOperator(int operator){
 	return 0;
 };
 
+void handleBrace(Stack stack,Queue queue,int operator){
+	int i,count;
+	char top = (char)((*stack.stackTop)->data);
+	count = stack.list->count ;
+
+	while(top!='('){
+		insert(queue,(void *)' ');insert(queue,(void *)top);
+		pop(stack);
+		top = (char)((*stack.stackTop)->data);
+	}
+	pop(stack);
+}
+
+
 int checkPrecedence(int operatorInStack,int operatorInString){
 	int precedenceInStack,precedenceInString;
 	precedenceInStack = setPrecedenceOfOperator(operatorInStack);
@@ -99,17 +110,18 @@ int checkPrecedence(int operatorInStack,int operatorInString){
 void handleOperatorInStack(int operator,Stack stack,Queue queue){
 	int operatorInStack,count,i;
 	count = stack.list->count;
-	if(count){
+	if(count && operator!=')'){
 		for(i=0;i<count;i++){
 			operatorInStack = (char)((*stack.stackTop)->data);
-				(checkPrecedence(operatorInStack,operator)) && pop(stack) && 
+				(operator!='(') && (checkPrecedence(operatorInStack,operator)) && pop(stack) && 
 					insert(queue, (void *)operatorInStack) && insert(queue, (void *)' ');
 		}
 	}
+	if(operator==')'){ handleBrace(stack,queue,operator);}
 	(operator!=')') && push(stack,(void*)operator);
 }
 
-int handleDigitsInsertInQueue1(char* expression,int i,int k,Queue queue){
+int handleDigitsInsertInQueue(char* expression,int i,int k,Queue queue){
 	char data = expression[i];
 	if(expression[i]==' ' && k==1) return k=0;
 	if(k!=1) insert(queue,(void*)data);
@@ -126,30 +138,38 @@ void insertOperatorInQueue(Stack stack,Queue queue){
 	}
 }
 
+int handleExpression(char *expression,int i,Stack stack,Queue queue,int k){
+	char operator;
+	if(isOperator(expression,i)){ operator = expression[i]; handleOperatorInStack(operator,stack,queue);}
+
+	if(isDigit(expression,i) || expression[i]==32) k = handleDigitsInsertInQueue(expression,i,k,queue);
+
+	return k;
+}
+
+void postfixString(char *result,Queue queue,int count){
+	int j=0;
+	for(j=0;j<count;j++){
+		result[j] = (char)((*queue.Front)->data); deleteFront(queue);
+		if(j==count-1){result[j+1] = '\0';}
+	}
+};
 
 char * infixToPostfix(char * expression){
-	int i=0,j=0,k=-1,count,brace=0;
-	char operator;
+	int i=0,j=0,k=-1,count;
 	char *result = malloc(sizeof(char)*strlen(expression));
-	Stack stack = createStack();
+	Stack stack = createStack(); 
 	Queue queue = createQueue();
 
 	while(expression[i]!='\0'){
 		if(findWhiteSpace(expression,i)){return 0;}
-			
-		if(isOperator(expression,i)){ operator = expression[i]; handleOperatorInStack(operator,stack,queue);}
-
-		if(isDigit(expression,i) || expression[i]==32) k = handleDigitsInsertInQueue1(expression,i,k,queue);
-
-		i++;
+		k = handleExpression(expression,i,stack,queue,k); i++;
 	};
 
 	insertOperatorInQueue(stack,queue);
 	count = queue.list->count;
+	postfixString(result,queue,count);
 
-	for(j=0;j<count;j++){
-		result[j] = (char)((*queue.Front)->data); deleteFront(queue);
-	}
 	return result;
 }
 

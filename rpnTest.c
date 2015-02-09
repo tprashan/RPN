@@ -336,23 +336,45 @@ void test_47_convert_it_to_an_equivalent_valid_Postfix_expression(){
 	assertEqual(strcmp(result,expected),0);
 }
 
-// void test_48_convert_it_to_an_equivalent_valid_Postfix_expression(){
-// 	char *result;
-// 	char *expected="1 2 3 + *";
-// 	char *expression = "1 * ( 2 + 3 )";
-// 	result = infixToPostfix(expression);
-// 	assertEqual(strcmp(result,expected),0);
-// }
+void test_48_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result;
+	char *expected="1 2 3 + *";
+	char *expression = "1 * (2 + 3)";
+	result = infixToPostfix(expression);
+	assertEqual(strcmp(result,expected),0);
+}
 
-// void test_46_convert_it_to_an_equivalent_valid_Postfix_expression(){
+void test_49_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result;
+	char *expected="1 2 + 3 4 + *";
+	char *expression = "(1 + 2) * (3 + 4)";
+	result = infixToPostfix(expression);
+	assertEqual(strcmp(result,expected),0);
+}
+
+void test_50_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result;
+	char *expected="1 2 * 3 4 * +";
+	char *expression = "1 * 2 + 3 * 4";
+	result = infixToPostfix(expression);
+	assertEqual(strcmp(result,expected),0);
+}
+
+void test_51_convert_it_to_an_equivalent_valid_Postfix_expression(){
+	char *result;
+	char *expected="3 4 2 * 1 5 - 2 ^ / +";
+	char *expression = "3 + 4 * 2 / (1 - 5) ^ 2";
+	result = infixToPostfix(expression);
+	// printf("Result output---%s\n",result );
+	assertEqual(strcmp(result,expected),0);
+}
+
+// void test_51_convert_it_to_an_equivalent_valid_Postfix_expression(){
 // 	char *result;
 // 	char *expected="3 4 2 * 1 5 - 2 3 ^ ^ / +";
-// 	char *expression = "3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3";
+// 	char *expression = "3 + 4 * 2 / (1 - 5) ^ 2 ^ 3";
 // 	result = infixToPostfix(expression);
-
-// 	printf("----------%s\n",result );
-// 	// printf("outPut----3 4 2 * / +   - (  2 ^ 3 ^ )\n");
-// 	printf("expected--3 4 2 * 1 5 - 2 3 ^ ^ / +\n");
-
+// 	printf("Result output---%s\n",result );
 // 	assertEqual(strcmp(result,expected),0);
 // }
+
